@@ -165,6 +165,7 @@ public class SocksVpnService extends VpnService {
             // Just bypass myself
             try {
                 b.addDisallowedApplication("net.typeblog.socks");
+                b.addDisallowedApplication("app.kloak.seguroplatform");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -173,6 +174,7 @@ public class SocksVpnService extends VpnService {
                 // First, bypass myself
                 try {
                     b.addDisallowedApplication("net.typeblog.socks");
+                    b.addDisallowedApplication("app.kloak.seguroplatform");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -189,7 +191,7 @@ public class SocksVpnService extends VpnService {
                 }
             } else {
                 for (String p : apps) {
-                    if (TextUtils.isEmpty(p) || p.trim().equals("net.typeblog.socks")) {
+                    if (TextUtils.isEmpty(p) || p.trim().equals("net.typeblog.socks") ||  p.trim().equals("app.kloak.seguroplatform")) {
                         continue;
                     }
 
