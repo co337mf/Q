@@ -123,15 +123,15 @@ public class ProfileFragment extends PreferenceFragmentCompat implements Prefere
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.prof_add:
-                addProfile();
-                return true;
-            case R.id.prof_del:
-                removeProfile();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == R.id.prof_add) {
+            addProfile();
+            return true;
+        } else if (id == R.id.prof_del) {
+            removeProfile();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -183,7 +183,7 @@ public class ProfileFragment extends PreferenceFragmentCompat implements Prefere
             if (TextUtils.isEmpty(newValue.toString()))
                 return false;
 
-            mProfile.setDnsPort(Integer.valueOf(newValue.toString()));
+            mProfile.setDnsPort(Integer.parseInt(newValue.toString()));
             resetTextN(mPrefDnsPort, newValue);
             return true;
         } else if (p == mPrefPerApp) {
@@ -361,31 +361,24 @@ public class ProfileFragment extends PreferenceFragmentCompat implements Prefere
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.prof_add)
                 .setView(e)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int which) {
-                        String name = e.getText().toString().trim();
+                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    String name = e.getText().toString().trim();
 
-                        if (!TextUtils.isEmpty(name)) {
-                            Profile p = mManager.addProfile(name);
+                    if (!TextUtils.isEmpty(name)) {
+                        Profile p = mManager.addProfile(name);
 
-                            if (p != null) {
-                                mProfile = p;
-                                reload();
-                                return;
-                            }
+                        if (p != null) {
+                            mProfile = p;
+                            reload();
+                            return;
                         }
-
-                        Toast.makeText(getActivity(),
-                                String.format(getString(R.string.err_add_prof), name),
-                                Toast.LENGTH_SHORT).show();
                     }
+                    Toast.makeText(getActivity(),
+                            String.format(getString(R.string.err_add_prof), name),
+                            Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int which) {
+                .setNegativeButton(android.R.string.cancel, (d, which) -> {
 
-                    }
                 })
                 .create().show();
     }
@@ -394,24 +387,17 @@ public class ProfileFragment extends PreferenceFragmentCompat implements Prefere
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.prof_del)
                 .setMessage(String.format(getString(R.string.prof_del_confirm), mProfile.getName()))
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int which) {
-                        if (!mManager.removeProfile(mProfile.getName())) {
-                            Toast.makeText(getActivity(),
-                                    getString(R.string.err_del_prof, mProfile.getName()),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            mProfile = mManager.getDefault();
-                            reload();
-                        }
+                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    if (!mManager.removeProfile(mProfile.getName())) {
+                        Toast.makeText(getActivity(),
+                                getString(R.string.err_del_prof, mProfile.getName()),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        mProfile = mManager.getDefault();
+                        reload();
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int which) {
-
-                    }
+                .setNegativeButton(android.R.string.cancel, (d, which) -> {
                 })
                 .create().show();
     }
